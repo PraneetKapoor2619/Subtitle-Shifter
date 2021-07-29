@@ -7,20 +7,10 @@
 
 import os
 import re
-import sys
-
-def printProgressBar(i, max, message):
-	bar = 50
-	percentage = i/max
-	sys.stdout.write("\r")
-	sys.stdout.write(f"[{'=' * int(bar * percentage):{bar}s}] {int(100 * percentage)} % {message}")
-	sys.stdout.flush()
-	return 0
 
 def time_array(line):
 	array = re.findall("[0-9.,]+", line)
 	s_char = re.findall("[^0-9.,: ]+", line)
-	print(s_char)
 	for i in range(len(array)):
 		if(array[i].find(',') != -1):
 			array[i] = array[i].replace(',', '.')
@@ -78,33 +68,30 @@ if(total_line_count == 0): exit(0)
 
 fhandle.seek(0)
 counter = 1
+line_counter_2 = 1
 dialogue_flag = False
 for line in fhandle:
 	if(dialogue_flag == False):
 		f2.write(line)
-		line.strip("\r\n\t ")
-		print(line, end = ' ')
 		try: 
 			isnum = int(line)
 		except:
 			isnum = False
 		if(isnum):
-			print('Number detected')
 			if(int(line) == counter):
-				print("Here")
 				counter += 1
 				dialogue_flag = True
 				continue
 	else:
-		print("fixing")
 		dialogue_flag = False
 		array, s_char = time_array(line)
 		array = time_dilation(array, delay_string)
 		s_char = " " + s_char + " "
 		string = array[0] + ':' + array[1] + ':' + array[2] + s_char + array[3] + ':' + array[4] + ':' + array[5] + "\n"
-		print(string)
 		f2.write(string)
+		line_counter_2 += 1
 fhandle.close()
 f2.close()
-#os.system("rm " + filename)
-#os.system("mv " + new_file + " filename")
+os.system("rm " + filename)
+os.system("mv " + new_file + " " + filename)
+print("Done")
